@@ -17,6 +17,8 @@ package com.liferay.portlet.asset.service.impl;
 import com.liferay.portal.kernel.cache.ThreadLocalCachable;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.search.Indexable;
+import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.transaction.TransactionCommitCallbackRegistryUtil;
 import com.liferay.portal.kernel.util.CharPool;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -60,6 +62,7 @@ import java.util.concurrent.Callable;
 public class AssetCategoryLocalServiceImpl
 	extends AssetCategoryLocalServiceBaseImpl {
 
+	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public AssetCategory addCategory(
 			long userId, long parentCategoryId, Map<Locale, String> titleMap,
