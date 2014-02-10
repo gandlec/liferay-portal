@@ -163,10 +163,10 @@ AUI.add(
 		var STR_ROWS_PER_PAGE = 'rowsPerPage';
 
 		var TPL_CATEGORY_ITEM =
-			'<label class="category-item" id="categoryNode{categoryId}" title="{name}">' +
-				'<span class="category-name" title="{name}">' +
-					'<input class="category-item-check" data-categoryId="{categoryId}" name="category-item-check" type="checkbox" value="{name}" {checked} />' +
-					'{name}' +
+			'<label class="category-item" id="categoryNode{categoryId}" title="{titleCurrentValue}">' +
+				'<span class="category-name" title="{titleCurrentValue}">' +
+					'<input class="category-item-check" data-categoryId="{categoryId}" name="category-item-check" type="checkbox" value="{titleCurrentValue}" {checked} />' +
+					'{titleCurrentValue}' +
 				'</span>' +
 				'<span class="category-path" title="{path}">{path}</span>' +
 			'</label>';
@@ -1527,7 +1527,6 @@ AUI.add(
 							vocabularyId: vocabularyId,
 							start: -1,
 							end: -1,
-							obc: null
 						};
 
 						var query = instance._liveSearch.get(STR_QUERY);
@@ -1538,13 +1537,13 @@ AUI.add(
 							params = A.mix(
 								{
 									groupId: themeDisplay.getSiteGroupId(),
-									name: Lang.sub(TPL_SEARCH_QUERY, [query])
+									title: Lang.sub(TPL_SEARCH_QUERY, [query])
 								},
 								defaultParams
 							);
 						}
 
-						Liferay.Service('/assetcategory/get-json-vocabulary-categories', params, callback);
+						Liferay.Service('/assetcategory/get-json-vocabulary-categories-by-title', params, callback);
 					},
 
 					_getVocabularyCategoriesTree: function(vocabularyId, callback) {
