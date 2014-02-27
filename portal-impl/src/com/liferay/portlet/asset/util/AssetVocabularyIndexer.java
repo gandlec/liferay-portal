@@ -12,53 +12,48 @@
  * details.
  */
 
-package com.liferay.portlet.documentlibrary.util;
+package com.liferay.portlet.asset.util;
 
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.Property;
-import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.portlet.LiferayPortletURL;
-import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.search.BaseIndexer;
+import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
+import com.liferay.portal.kernel.search.BooleanQueryFactoryUtil;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.DocumentImpl;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchEngineUtil;
 import com.liferay.portal.kernel.search.Summary;
-import com.liferay.portal.kernel.util.CharPool;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.security.permission.ActionKeys;
 import com.liferay.portal.security.permission.PermissionChecker;
 import com.liferay.portal.util.PortletKeys;
-import com.liferay.portlet.documentlibrary.model.DLFolder;
-import com.liferay.portlet.documentlibrary.service.DLFolderLocalServiceUtil;
-import com.liferay.portlet.documentlibrary.service.permission.DLFolderPermission;
-import com.liferay.portlet.documentlibrary.service.persistence.DLFolderActionableDynamicQuery;
+import com.liferay.portlet.asset.model.AssetVocabulary;
+import com.liferay.portlet.asset.service.AssetVocabularyLocalServiceUtil;
+import com.liferay.portlet.asset.service.permission.AssetVocabularyPermission;
+import com.liferay.portlet.asset.service.persistence.AssetVocabularyActionableDynamicQuery;
 
 import java.util.Locale;
 
-import javax.portlet.PortletRequest;
 import javax.portlet.PortletURL;
-import javax.portlet.WindowStateException;
 
 /**
- * @author Alexander Chow
+ * @author Istvan Andras Dezsi
  */
-public class DLFolderIndexer extends BaseIndexer {
+public class AssetVocabularyIndexer extends BaseIndexer {
 
-	public static final String[] CLASS_NAMES = {DLFolder.class.getName()};
+	public static final String[] CLASS_NAMES = {
+		AssetVocabulary.class.getName()
+	};
 
-	public static final String PORTLET_ID = PortletKeys.DOCUMENT_LIBRARY;
+	public static final String PORTLET_ID = PortletKeys.ASSET_CATEGORIES_ADMIN;
 
-	public DLFolderIndexer() {
+	public AssetVocabularyIndexer() {
 		setFilterSearch(true);
 		setPermissionAware(true);
 	}
@@ -79,10 +74,11 @@ public class DLFolderIndexer extends BaseIndexer {
 			long entryClassPK, String actionId)
 		throws Exception {
 
-		DLFolder dlFolder = DLFolderLocalServiceUtil.getFolder(entryClassPK);
+		AssetVocabulary assetVocabulary =
+			AssetVocabularyLocalServiceUtil.getVocabulary(entryClassPK);
 
-		return DLFolderPermission.contains(
-			permissionChecker, dlFolder, ActionKeys.VIEW);
+		return AssetVocabularyPermission.contains(
+			permissionChecker, assetVocabulary, ActionKeys.VIEW);
 	}
 
 	@Override
@@ -90,47 +86,80 @@ public class DLFolderIndexer extends BaseIndexer {
 			BooleanQuery contextQuery, SearchContext searchContext)
 		throws Exception {
 
-		addStatus(contextQuery, searchContext);
+		long[] groupIds = searchContext.getGroupIds();
 
-		contextQuery.addRequiredTerm(Field.HIDDEN, false);
+		if (!ArrayUtil.isEmpty(groupIds)) {
+			BooleanQuery groupQuery = BooleanQueryFactoryUtil.create(
+				searchContext);
+
+			for (long groupId : groupIds) {
+				groupQuery.addTerm(Field.GROUP_ID, String.valueOf(groupId));
+			}
+
+			contextQuery.add(groupQuery, BooleanClauseOccur.MUST);
+		}
+	}
+
+	@Override
+	public void postProcessSearchQuery(
+			BooleanQuery searchQuery, SearchContext searchContext)
+		throws Exception {
+
+		addSearchLocalizedTerm(searchQuery, searchContext, Field.TITLE, true);
+	}
+
+	@Override
+	protected void addSearchLocalizedTerm(
+			BooleanQuery searchQuery, SearchContext searchContext, String field,
+			boolean like)
+		throws Exception {
+
+		if (Validator.isNull(field)) {
+			return;
+		}
+
+		String value = String.valueOf(searchContext.getAttribute(field));
+
+		if (Validator.isNull(value)) {
+			value = searchContext.getKeywords();
+		}
+
+		if (Validator.isNull(value)) {
+			return;
+		}
+
+		String localizedField = DocumentImpl.getLocalizedName(
+			searchContext.getLocale(), field);
+
+		BooleanQuery localizedQuery = BooleanQueryFactoryUtil.create(
+			searchContext);
+
+		localizedQuery.addTerm(field, value, like);
+		localizedQuery.addTerm(localizedField, value, like);
+
+		searchQuery.add(localizedQuery, BooleanClauseOccur.MUST);
 	}
 
 	@Override
 	protected void doDelete(Object obj) throws Exception {
-		DLFolder dlFolder = (DLFolder)obj;
+		AssetVocabulary assetVocabulary = (AssetVocabulary)obj;
 
-		Document document = new DocumentImpl();
-
-		document.addUID(PORTLET_ID, dlFolder.getFolderId());
-
-		SearchEngineUtil.deleteDocument(
-			getSearchEngineId(), dlFolder.getCompanyId(),
-			document.get(Field.UID));
+		deleteDocument(
+			assetVocabulary.getCompanyId(), assetVocabulary.getVocabularyId());
 	}
 
 	@Override
 	protected Document doGetDocument(Object obj) throws Exception {
-		DLFolder dlFolder = (DLFolder)obj;
+		AssetVocabulary assetVocabulary = (AssetVocabulary)obj;
 
-		if (_log.isDebugEnabled()) {
-			_log.debug("Indexing folder " + dlFolder);
-		}
+		Document document = getBaseModelDocument(PORTLET_ID, assetVocabulary);
 
-		Document document = getBaseModelDocument(PORTLET_ID, dlFolder);
-
-		document.addText(Field.DESCRIPTION, dlFolder.getDescription());
-		document.addKeyword(Field.FOLDER_ID, dlFolder.getParentFolderId());
+		document.addLocalizedText(
+			Field.DESCRIPTION, assetVocabulary.getDescriptionMap());
+		document.addText(Field.NAME, assetVocabulary.getName());
+		document.addLocalizedText(Field.TITLE, assetVocabulary.getTitleMap());
 		document.addKeyword(
-			Field.HIDDEN, (dlFolder.isHidden() || dlFolder.isInHiddenFolder()));
-		document.addText(Field.TITLE, dlFolder.getName());
-		document.addKeyword(Field.TREE_PATH, dlFolder.getTreePath());
-		document.addKeyword(
-			Field.TREE_PATH,
-			StringUtil.split(dlFolder.getTreePath(), CharPool.SLASH));
-
-		if (_log.isDebugEnabled()) {
-			_log.debug("Document " + dlFolder + " indexed successfully");
-		}
+			Field.VOCABULARY_ID, assetVocabulary.getVocabularyId());
 
 		return document;
 	}
@@ -140,58 +169,34 @@ public class DLFolderIndexer extends BaseIndexer {
 		Document document, Locale locale, String snippet,
 		PortletURL portletURL) {
 
-		LiferayPortletURL liferayPortletURL = (LiferayPortletURL)portletURL;
-
-		liferayPortletURL.setLifecycle(PortletRequest.ACTION_PHASE);
-
-		try {
-			liferayPortletURL.setWindowState(LiferayWindowState.EXCLUSIVE);
-		}
-		catch (WindowStateException wse) {
-		}
-
-		String folderId = document.get(Field.ENTRY_CLASS_PK);
-
-		portletURL.setParameter("struts_action", "/document_library/view");
-		portletURL.setParameter("folderId", folderId);
-
-		Summary summary = createSummary(
-			document, Field.TITLE, Field.DESCRIPTION);
-
-		summary.setMaxContentLength(200);
-		summary.setPortletURL(portletURL);
-
-		return summary;
+		return null;
 	}
 
 	@Override
 	protected void doReindex(Object obj) throws Exception {
-		DLFolder dlFolder = (DLFolder)obj;
+		AssetVocabulary assetVocabulary = (AssetVocabulary)obj;
 
-		if (!dlFolder.isApproved() && !dlFolder.isInTrash()) {
-			return;
-		}
-
-		Document document = getDocument(dlFolder);
+		Document document = getDocument(assetVocabulary);
 
 		if (document != null) {
 			SearchEngineUtil.updateDocument(
-				getSearchEngineId(), dlFolder.getCompanyId(), document);
+				getSearchEngineId(), assetVocabulary.getCompanyId(), document);
 		}
 	}
 
 	@Override
 	protected void doReindex(String className, long classPK) throws Exception {
-		DLFolder dlFolder = DLFolderLocalServiceUtil.getFolder(classPK);
+		AssetVocabulary assetVocabulary =
+			AssetVocabularyLocalServiceUtil.getVocabulary(classPK);
 
-		doReindex(dlFolder);
+		doReindex(assetVocabulary);
 	}
 
 	@Override
 	protected void doReindex(String[] ids) throws Exception {
 		long companyId = GetterUtil.getLong(ids[0]);
 
-		reindexFolders(companyId);
+		reindexAssetVocabularies(companyId);
 	}
 
 	@Override
@@ -199,30 +204,22 @@ public class DLFolderIndexer extends BaseIndexer {
 		return PORTLET_ID;
 	}
 
-	protected void reindexFolders(final long companyId)
+	protected void reindexAssetVocabularies(long companyId)
 		throws PortalException, SystemException {
 
 		ActionableDynamicQuery actionableDynamicQuery =
-			new DLFolderActionableDynamicQuery() {
-
-			@Override
-			protected void addCriteria(DynamicQuery dynamicQuery) {
-				Property property = PropertyFactoryUtil.forName("mountPoint");
-
-				dynamicQuery.add(property.eq(false));
-			}
+			new AssetVocabularyActionableDynamicQuery() {
 
 			@Override
 			protected void performAction(Object object) throws PortalException {
-				DLFolder dlFolder = (DLFolder)object;
+				AssetVocabulary assetVocabulary = (AssetVocabulary)object;
 
-				Document document = getDocument(dlFolder);
+					Document document = getDocument(assetVocabulary);
 
 				if (document != null) {
 					addDocument(document);
 				}
 			}
-
 		};
 
 		actionableDynamicQuery.setCompanyId(companyId);
@@ -230,7 +227,5 @@ public class DLFolderIndexer extends BaseIndexer {
 
 		actionableDynamicQuery.performActions();
 	}
-
-	private static Log _log = LogFactoryUtil.getLog(DLFolderIndexer.class);
 
 }
