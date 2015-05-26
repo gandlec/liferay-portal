@@ -628,7 +628,7 @@ public class ChannelImpl extends BaseChannelImpl {
 		NotificationEvent notificationEvent, long currentTime) {
 
 		if ((notificationEvent.getDeliverBy() != 0) &&
-			(notificationEvent.getDeliverBy() <= currentTime)) {
+			(notificationEvent.getTimestamp() >= currentTime)) {
 
 			return true;
 		}
