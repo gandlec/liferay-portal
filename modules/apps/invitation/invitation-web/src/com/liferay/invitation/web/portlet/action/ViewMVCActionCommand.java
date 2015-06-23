@@ -33,6 +33,7 @@ import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portal.util.PortalUtil;
 import com.liferay.portal.util.WebKeys;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
@@ -159,8 +160,10 @@ public class ViewMVCActionCommand extends BaseMVCActionCommand {
 			MailMessage message = new MailMessage(
 				from, to, subject, body, true);
 
+			Date date = new Date();
+
 			message.setMessageId(
-				PortalUtil.getMailId(mx, "invitation", user.getUserId()));
+				PortalUtil.getMailId(mx, "invitation", date.getTime()));
 
 			MailServiceUtil.sendEmail(message);
 		}
