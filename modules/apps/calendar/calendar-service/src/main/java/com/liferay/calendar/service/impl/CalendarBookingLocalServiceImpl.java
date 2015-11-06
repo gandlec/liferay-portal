@@ -194,31 +194,7 @@ public class CalendarBookingLocalServiceImpl
 
 		calendarBooking.setStatusDate(serviceContext.getModifiedDate(now));
 
-		if (Validator.isNotNull(recurrence)) {
-			Recurrence recurrenceObj = RecurrenceSerializer.deserialize(
-				recurrence);
-
-			List<PositionalWeekday> positionalWeekdays =
-				recurrenceObj.getPositionalWeekdays();
-
-			boolean isInWeekdays = true;
-
-			if (!positionalWeekdays.isEmpty()) {
-				isInWeekdays =
-					isInWeekdays(startTimeJCalendar, positionalWeekdays,
-					recurrenceObj);
-			}
-
-			if (!isInWeekdays) {
-				try {
-					resetStartTimeAndEndTime(
-						calendarBooking, positionalWeekdays, recurrenceObj);
-				}
-				catch (ParseException pe) {
-					_log.error("Unable to parse data ", pe);
-				}
-			}
-		}
+		adjustToRecurrence(calendarBooking, startTimeJCalendar, recurrence);
 
 		calendarBookingPersistence.update(calendarBooking);
 
@@ -895,6 +871,8 @@ public class CalendarBookingLocalServiceImpl
 
 		calendarBooking.setExpandoBridgeAttributes(serviceContext);
 
+		adjustToRecurrence(calendarBooking, startTimeJCalendar, recurrence);
+
 		calendarBookingPersistence.update(calendarBooking);
 
 		addChildCalendarBookings(
@@ -1273,6 +1251,37 @@ public class CalendarBookingLocalServiceImpl
 
 			sendNotification(
 				childCalendarBooking, notificationTemplateType, serviceContext);
+		}
+	}
+
+	protected void adjustToRecurrence(
+		CalendarBooking calendarBooking, java.util.Calendar startTimeJCalendar,
+		String recurrence) {
+
+		if (Validator.isNotNull(recurrence)) {
+			Recurrence recurrenceObj = RecurrenceSerializer.deserialize(
+				recurrence);
+
+			List<PositionalWeekday> positionalWeekdays =
+				recurrenceObj.getPositionalWeekdays();
+
+			boolean isInWeekdays = true;
+
+			if (!positionalWeekdays.isEmpty()) {
+				isInWeekdays =
+					isInWeekdays(startTimeJCalendar, positionalWeekdays,
+					recurrenceObj);
+			}
+
+			if (!isInWeekdays) {
+				try {
+					resetStartTimeAndEndTime(
+						calendarBooking, positionalWeekdays, recurrenceObj);
+				}
+				catch (ParseException pe) {
+					_log.error("Unable to parse data ", pe);
+				}
+			}
 		}
 	}
 
