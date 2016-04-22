@@ -23,6 +23,7 @@ import com.artofsolving.jodconverter.openoffice.connection.SocketOpenOfficeConne
 import com.artofsolving.jodconverter.openoffice.converter.OpenOfficeDocumentConverter;
 import com.artofsolving.jodconverter.openoffice.converter.StreamOpenOfficeDocumentConverter;
 
+import com.liferay.document.library.kernel.util.WkHtmlToPdfUtil;
 import com.liferay.portal.kernel.configuration.Filter;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.io.unsync.UnsyncByteArrayOutputStream;
@@ -48,6 +49,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Future;
 
 /**
  * @author Bruno Farache
@@ -208,18 +210,60 @@ public class DocumentConversionUtil {
 						outputDocumentFormat.getName());
 		}
 
-		UnsyncByteArrayOutputStream unsyncByteArrayOutputStream =
-			new UnsyncByteArrayOutputStream();
+		if (sourceExtension.equals("html") && targetExtension.equals("pdf") &&
+			WkHtmlToPdfUtil.isEnabled()) {
 
-		DocumentConverter documentConverter = _getDocumentConverter();
+			if (!_wkHtmlToPdfInitialized) {
+				WkHtmlToPdfUtil.reset();
 
-		documentConverter.convert(
-			inputStream, inputDocumentFormat, unsyncByteArrayOutputStream,
-			outputDocumentFormat);
+				_wkHtmlToPdfInitialized = true;
+			}
 
-		FileUtil.write(
-			file, unsyncByteArrayOutputStream.unsafeGetByteArray(), 0,
-			unsyncByteArrayOutputStream.size());
+			String inputTempFileName = getFilePath(id, sourceExtension);
+
+			File inputTempFile = new File(inputTempFileName);
+
+			FileUtil.write(inputTempFile, inputStream);
+
+			List<String> arguments = new ArrayList<>();
+
+			arguments.add(inputTempFile.getPath());
+			arguments.add(file.getPath());
+
+			Future<?> future;
+
+			try {
+				future = WkHtmlToPdfUtil.execute(arguments);
+
+				while (!future.isCancelled()) {
+					if (future.isDone()) {
+						break;
+					}
+				}
+
+				future.get();
+			}
+			catch (Exception e) {
+				_log.error(e, e);
+			}
+			finally {
+				FileUtil.delete(inputTempFile);
+			}
+		}
+		else {
+			UnsyncByteArrayOutputStream unsyncByteArrayOutputStream =
+				new UnsyncByteArrayOutputStream();
+
+			DocumentConverter documentConverter = _getDocumentConverter();
+
+			documentConverter.convert(
+				inputStream, inputDocumentFormat, unsyncByteArrayOutputStream,
+				outputDocumentFormat);
+
+			FileUtil.write(
+				file, unsyncByteArrayOutputStream.unsafeGetByteArray(), 0,
+				unsyncByteArrayOutputStream.size());
+		}
 
 		return file;
 	}
@@ -396,5 +440,6 @@ public class DocumentConversionUtil {
 	private final Map<String, String[]> _conversionsMap = new HashMap<>();
 	private DocumentConverter _documentConverter;
 	private OpenOfficeConnection _openOfficeConnection;
+	private boolean _wkHtmlToPdfInitialized;
 
 }
