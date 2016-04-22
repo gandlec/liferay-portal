@@ -15,6 +15,7 @@
 package com.liferay.server.admin.web.portlet.action;
 
 import com.liferay.document.library.kernel.util.DLPreviewableProcessor;
+import com.liferay.document.library.kernel.util.WkHtmlToPdfUtil;
 import com.liferay.mail.kernel.model.Account;
 import com.liferay.mail.kernel.service.MailService;
 import com.liferay.petra.log4j.Log4JUtil;
@@ -590,6 +591,10 @@ public class EditServerMVCActionCommand extends BaseMVCActionCommand {
 			actionRequest, "openOfficeEnabled");
 		int openOfficePort = ParamUtil.getInteger(
 			actionRequest, "openOfficePort");
+		boolean wkHtmlToPdfEnabled = ParamUtil.getBoolean(
+			actionRequest, "wkHtmlToPdfEnabled");
+		String wkHtmlToPdfPath = ParamUtil.getString(
+			actionRequest, "wkHtmlToPdfPath");
 		boolean xugglerEnabled = ParamUtil.getBoolean(
 			actionRequest, "xugglerEnabled");
 
@@ -602,6 +607,10 @@ public class EditServerMVCActionCommand extends BaseMVCActionCommand {
 			String.valueOf(openOfficeEnabled));
 		portletPreferences.setValue(
 			PropsKeys.OPENOFFICE_SERVER_PORT, String.valueOf(openOfficePort));
+		portletPreferences.setValue(
+			PropsKeys.WKHTMLTOPDF_ENABLED, String.valueOf(wkHtmlToPdfEnabled));
+		portletPreferences.setValue(
+			PropsKeys.WKHTMLTOPDF_GLOBAL_SEARCH_PATH, wkHtmlToPdfPath);
 		portletPreferences.setValue(
 			PropsKeys.XUGGLER_ENABLED, String.valueOf(xugglerEnabled));
 
@@ -624,6 +633,7 @@ public class EditServerMVCActionCommand extends BaseMVCActionCommand {
 
 		GhostscriptUtil.reset();
 		ImageMagickUtil.reset();
+		WkHtmlToPdfUtil.reset();
 	}
 
 	protected void updateFileUploads(

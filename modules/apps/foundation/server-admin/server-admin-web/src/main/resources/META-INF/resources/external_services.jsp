@@ -48,6 +48,12 @@
 				<aui:input cssClass="lfr-input-text-container" label="port" name="openOfficePort" type="text" value="<%= PrefsPropsUtil.getString(PropsKeys.OPENOFFICE_SERVER_PORT) %>" />
 			</liferay-ui:panel>
 
+			<liferay-ui:panel collapsible="<%= true %>" extended="<%= true %>" id="adminWkHtmlToPdfConversionPanel" markupView="lexicon" persistState="<%= true %>" title="enabling-wkhtmltopdf-provides-improved-html-to-pdf-conversion-quality">
+				<aui:input label="enabled" name="wkHtmlToPdfEnabled" type="checkbox" value="<%= WkHtmlToPdfUtil.isEnabled() %>" />
+
+				<aui:input cssClass="lfr-input-text-container" label="path" name="wkHtmlToPdfPath" type="text" value="<%= WkHtmlToPdfUtil.getGlobalSearchPath() %>" />
+			</liferay-ui:panel>
+
 			<liferay-ui:panel collapsible="<%= true %>" extended="<%= true %>" id="adminXugglerPanel" markupView="lexicon" persistState="<%= true %>" title="enabling-xuggler-provides-video-conversion-functionality">
 				<liferay-ui:error exception="<%= XugglerInstallException.class %>" targetNode="#controlMenuAlertsContainer">
 
