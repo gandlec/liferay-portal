@@ -1626,6 +1626,8 @@ public class PropsValues {
 
 	public static final String WIDGET_SERVLET_MAPPING = PropsUtil.get(PropsKeys.WIDGET_SERVLET_MAPPING);
 
+	public static final boolean WKHTMLTOPDF_ENABLED = GetterUtil.getBoolean(PropsUtil.get(PropsKeys.WKHTMLTOPDF_ENABLED));
+
 	public static final boolean XML_SECURITY_ENABLED = GetterUtil.getBoolean(PropsUtil.get(PropsKeys.XML_SECURITY_ENABLED));
 
 	public static final boolean XML_VALIDATION_ENABLED = GetterUtil.getBoolean(PropsUtil.get(PropsKeys.XML_VALIDATION_ENABLED));

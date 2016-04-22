@@ -2351,6 +2351,10 @@ public interface PropsKeys {
 
 	public static final String WIDGET_SERVLET_MAPPING = "widget.servlet.mapping";
 
+	public static final String WKHTMLTOPDF_ENABLED = "wkhtmltopdf.enabled";
+
+	public static final String WKHTMLTOPDF_GLOBAL_SEARCH_PATH = "wkhtmltopdf.global.search.path";
+
 	public static final String XML_SECURITY_ENABLED = "xml.security.enabled";
 
 	public static final String XML_VALIDATION_ENABLED = "xml.validation.enabled";
