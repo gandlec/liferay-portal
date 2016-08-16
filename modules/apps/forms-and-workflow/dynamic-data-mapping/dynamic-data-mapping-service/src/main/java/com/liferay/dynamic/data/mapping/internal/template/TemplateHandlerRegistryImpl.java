@@ -321,6 +321,14 @@ public class TemplateHandlerRegistryImpl implements TemplateHandlerRegistry {
 				map.put(locale, LanguageUtil.get(resourceBundle, key));
 			}
 
+			Locale siteDefaultLocale = LocaleUtil.getSiteDefault();
+
+			ResourceBundle resourceBundle =
+				resourceBundleLoader.loadResourceBundle(
+					LocaleUtil.toLanguageId(siteDefaultLocale));
+
+			map.put(siteDefaultLocale, LanguageUtil.get(resourceBundle, key));
+
 			return map;
 		}
 

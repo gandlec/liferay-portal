@@ -89,6 +89,14 @@ public class ResourceBundleUtil {
 			map.put(locale, getString(resourceBundle, key));
 		}
 
+		Locale siteDefaultLocale = LocaleUtil.getSiteDefault();
+
+		ResourceBundle resourceBundle =
+			resourceBundleLoader.loadResourceBundle(
+				LocaleUtil.toLanguageId(siteDefaultLocale));
+
+		map.put(siteDefaultLocale, getString(resourceBundle, key));
+
 		return map;
 	}
 

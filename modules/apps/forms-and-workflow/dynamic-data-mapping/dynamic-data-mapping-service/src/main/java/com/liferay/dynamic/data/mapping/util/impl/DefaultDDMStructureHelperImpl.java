@@ -35,6 +35,7 @@ import com.liferay.portal.kernel.template.TemplateConstants;
 import com.liferay.portal.kernel.upgrade.util.UpgradeProcessUtil;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -109,6 +110,15 @@ public class DefaultDDMStructureHelperImpl
 					curLocale, LanguageUtil.get(curLocale, description));
 			}
 
+			Locale siteDefaultLocale = LocaleUtil.getSiteDefault();
+
+			nameMap.put(siteDefaultLocale,
+				LanguageUtil.get(siteDefaultLocale, name));
+
+			descriptionMap.put(
+				siteDefaultLocale,
+				LanguageUtil.get(siteDefaultLocale, description));
+	
 			DDMForm ddmForm = getDDMForm(structureElement, locale);
 
 			DDMFormLayout ddmFormLayout = getDDMFormLayout(

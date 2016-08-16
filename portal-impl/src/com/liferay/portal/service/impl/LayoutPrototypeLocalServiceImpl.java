@@ -103,10 +103,9 @@ public class LayoutPrototypeLocalServiceImpl
 
 			layoutLocalService.addLayout(
 				userId, group.getGroupId(), true,
-				LayoutConstants.DEFAULT_PARENT_LAYOUT_ID,
-				layoutPrototype.getNameMap(), null, null, null, null,
-				LayoutConstants.TYPE_PORTLET, StringPool.BLANK, false,
-				friendlyURLMap, serviceContext);
+				LayoutConstants.DEFAULT_PARENT_LAYOUT_ID, nameMap, null, null,
+				null, null, LayoutConstants.TYPE_PORTLET, StringPool.BLANK,
+				false, friendlyURLMap, serviceContext);
 		}
 
 		return layoutPrototype;
