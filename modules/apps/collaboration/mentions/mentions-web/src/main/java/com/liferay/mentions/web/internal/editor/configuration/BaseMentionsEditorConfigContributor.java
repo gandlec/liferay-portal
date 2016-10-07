@@ -22,6 +22,8 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactory;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -49,6 +51,13 @@ public class BaseMentionsEditorConfigContributor
 		JSONArray triggerJSONArray = JSONFactoryUtil.createJSONArray();
 
 		JSONObject triggerJSONObject = JSONFactoryUtil.createJSONObject();
+
+		String specialCharacters = PropsUtil.get(
+			PropsKeys.USERS_SCREEN_NAME_SPECIAL_CHARACTERS);
+
+		triggerJSONObject.put(
+			"regExp",
+			"(?:\\strigger|^trigger)(\\w[\\s\\w" + specialCharacters + "]*)");
 
 		triggerJSONObject.put(
 			"resultFilters", "function(query, results) {return results;}");
