@@ -67,11 +67,12 @@ public class BlogsContentEditorConfigContributor
 		ThemeDisplay themeDisplay,
 		RequestBackedPortletURLFactory requestBackedPortletURLFactory) {
 
-		StringBundler sb = new StringBundler(6);
+		StringBundler sb = new StringBundler(7);
 
 		sb.append("a[*](*); ");
 		sb.append(getAllowedContentText());
 		sb.append(" div(*); img[alt, class, !src] {height, width}; ");
+		sb.append("iframe[frameborder, height, width, !src]; ");
 		sb.append(getAllowedContentLists());
 		sb.append(" p {text-align}; ");
 		sb.append(getAllowedContentTable());

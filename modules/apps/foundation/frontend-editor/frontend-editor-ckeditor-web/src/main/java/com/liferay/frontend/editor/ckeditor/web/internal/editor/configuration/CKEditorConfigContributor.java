@@ -87,6 +87,8 @@ public class CKEditorConfigContributor extends BaseCKEditorConfigContributor {
 
 		jsonObject.put("extraPlugins", extraPlugins);
 
+		jsonObject.put("removePlugins", "iframe,iframedialog");
+
 		jsonObject.put(
 			"filebrowserWindowFeatures",
 			"title=" + LanguageUtil.get(themeDisplay.getLocale(), "browse"));
