@@ -70,7 +70,7 @@ public class CKEditorCreoleConfigContributor
 		jsonObject.put("disableObjectResizing", Boolean.TRUE);
 		jsonObject.put(
 			"extraPlugins",
-			"a11yhelpbtn,creole,itemselector,lfrpopup,wikilink");
+			"a11yhelpbtn,creole,itemselector,googledocs,lfrpopup,wikilink");
 		jsonObject.put(
 			"filebrowserWindowFeatures",
 			"title=" + LanguageUtil.get(themeDisplay.getLocale(), "browse"));
@@ -109,8 +109,8 @@ public class CKEditorCreoleConfigContributor
 		jsonArray.put(toJSONArray("['Link', 'Unlink']"));
 		jsonArray.put(
 			toJSONArray(
-				"['Table', '-','ImageSelector', '-', 'HorizontalRule', '-', " +
-					"'SpecialChar']"));
+				"['Table', '-', 'GoogleDocsSelector', 'ImageSelector', '-', " +
+					"'HorizontalRule', '-', 'SpecialChar']"));
 		jsonArray.put("/");
 		jsonArray.put(
 			toJSONArray(
@@ -135,6 +135,7 @@ public class CKEditorCreoleConfigContributor
 		jsonArray.put(toJSONArray("['Bold', 'Italic']"));
 		jsonArray.put(toJSONArray("['NumberedList', 'BulletedList']"));
 		jsonArray.put(toJSONArray("['Link', 'Unlink']"));
+		jsonArray.put(toJSONArray("['GoogleDocsSelector']"));
 		jsonArray.put(toJSONArray("['ImageSelector']"));
 
 		if (isShowSource(inputEditorTaglibAttributes)) {
@@ -155,6 +156,7 @@ public class CKEditorCreoleConfigContributor
 				"['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent']"));
 		jsonArray.put(toJSONArray("['Format']"));
 		jsonArray.put(toJSONArray("['Link', 'Unlink']"));
+		jsonArray.put(toJSONArray("['GoogleDocsSelector']"));
 		jsonArray.put(toJSONArray("['ImageSelector']"));
 
 		if (isShowSource(inputEditorTaglibAttributes)) {

@@ -263,6 +263,21 @@ Parse.Simple.Creole = function(options) {
                 node.appendChild(img);
             } },
 
+        iframe: { regex: '\\$\\$(' + rx.link + ')\\$\\$',
+            build: function(node, r, options) {
+                var iframe = document.createElement('iframe');
+
+                iframe.setAttribute('frameborder', '0');
+                iframe.setAttribute('height', '300');
+                iframe.setAttribute('width', '90%');
+
+                iframe.src = options && options.linkFormat
+                     ? formatLink(r[1].replace(/~(.)/g, '$1'), options.linkFormat)
+                     : r[1].replace(/~(.)/g, '$1');
+
+                node.appendChild(iframe);
+            } },
+
         namedUri: { regex: '\\[\\[(' + rx.uri + ')\\|(' + rx.linkText + ')\\]\\]',
             build: function(node, r, options) {
                 var link = document.createElement('a');
@@ -366,14 +381,14 @@ link.setAttribute('data-cke-saved-href', link.href);
         [ g.escapedSequence, g.br, g.rawUri,
             g.namedUri, g.namedInterwikiLink, g.namedLink,
             g.unnamedUri, g.unnamedInterwikiLink, g.unnamedLink,
-            g.tt, g.img ];
+            g.tt, g.img, g.iframe ];
 
     g.singleLine.children = g.paragraph.children =
             g.text.children = g.strong.children = g.em.children =
         [ g.escapedSequence, g.strong, g.em, g.br, g.rawUri,
             g.namedUri, g.namedInterwikiLink, g.namedLink,
             g.unnamedUri, g.unnamedInterwikiLink, g.unnamedLink,
-            g.tt, g.img ];
+            g.tt, g.img, g.iframe ];
 
     g.root = {
         children: [ g.h1, g.h2, g.h3, g.h4, g.h5, g.h6,

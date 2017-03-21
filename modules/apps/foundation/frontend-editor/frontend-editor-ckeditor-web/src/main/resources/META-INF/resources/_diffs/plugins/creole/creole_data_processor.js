@@ -297,6 +297,9 @@
 				else if (tagName == 'img') {
 					instance._handleImage(element, listTagsIn, listTagsOut);
 				}
+				else if (tagName == 'iframe') {
+					instance._handleIFrame(element, listTagsIn, listTagsOut);
+				}
 				else if (tagName == TAG_UNORDERED_LIST) {
 					instance._handleUnorderedList(element, listTagsIn, listTagsOut);
 				}
@@ -360,6 +363,20 @@
 			}
 
 			listTagsIn.push('----', NEW_LINE);
+		},
+
+		_handleIFrame: function(element, listTagsIn, listTagsOut) {
+			var instance = this;
+
+			var attrSrc = element.getAttribute('src');
+
+			if (!REGEX_URL_PREFIX.test(attrSrc)) {
+				attrSrc = decodeURIComponent(attrSrc);
+			}
+
+			listTagsIn.push('$$', attrSrc);
+
+			listTagsOut.push('$$');
 		},
 
 		_handleImage: function(element, listTagsIn, listTagsOut) {
