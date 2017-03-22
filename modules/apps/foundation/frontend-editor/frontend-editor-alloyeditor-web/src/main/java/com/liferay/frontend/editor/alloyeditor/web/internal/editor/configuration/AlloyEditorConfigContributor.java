@@ -60,10 +60,10 @@ public class AlloyEditorConfigContributor
 		String extraPlugins = jsonObject.getString("extraPlugins");
 
 		if (Validator.isNotNull(extraPlugins)) {
-			extraPlugins += ",itemselector,media";
+			extraPlugins += ",itemselector,googledocs,media";
 		}
 		else {
-			extraPlugins = "itemselector,media";
+			extraPlugins = "itemselector,googledocs,media";
 		}
 
 		jsonObject.put("extraPlugins", extraPlugins);
@@ -180,7 +180,9 @@ public class AlloyEditorConfigContributor
 	protected JSONObject getToolbarsAddJSONObject() {
 		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
 
-		jsonObject.put("buttons", toJSONArray("['image', 'table', 'hline']"));
+		jsonObject.put(
+			"buttons",
+			toJSONArray("['googledocs', 'image', 'table', 'hline']"));
 		jsonObject.put("tabIndex", 2);
 
 		return jsonObject;

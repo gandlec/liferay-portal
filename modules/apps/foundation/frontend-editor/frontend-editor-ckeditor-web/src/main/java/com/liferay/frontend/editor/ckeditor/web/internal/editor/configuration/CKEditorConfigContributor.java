@@ -74,7 +74,8 @@ public class CKEditorConfigContributor extends BaseCKEditorConfigContributor {
 		jsonObject.put("closeNoticeTimeout", 8000);
 		jsonObject.put("entities", Boolean.FALSE);
 
-		String extraPlugins = "a11yhelpbtn,itemselector,lfrpopup,media";
+		String extraPlugins =
+			"a11yhelpbtn,itemselector,googledocs,lfrpopup,media";
 
 		boolean inlineEdit = GetterUtil.getBoolean(
 			(String)inputEditorTaglibAttributes.get(
@@ -238,6 +239,7 @@ public class CKEditorConfigContributor extends BaseCKEditorConfigContributor {
 					"'JustifyBlock']"));
 		jsonArray.put(toJSONArray("['FontSize']"));
 		jsonArray.put(toJSONArray("['Link', 'Unlink']"));
+		jsonArray.put(toJSONArray("['GoogleDocsSelector']"));
 		jsonArray.put(toJSONArray("['ImageSelector']"));
 		jsonArray.put("/");
 		jsonArray.put(
@@ -277,7 +279,8 @@ public class CKEditorConfigContributor extends BaseCKEditorConfigContributor {
 		jsonArray.put(toJSONArray("['Styles', 'FontSize']"));
 		jsonArray.put(toJSONArray("['Link', 'Unlink', 'Anchor']"));
 
-		String buttons = "['Table', '-', 'ImageSelector',";
+		String buttons =
+			"['Table', '-', 'GoogleDocsSelector', 'ImageSelector',";
 
 		if (XugglerUtil.isEnabled()) {
 			buttons += " 'AudioSelector', 'VideoSelector',";
@@ -326,7 +329,8 @@ public class CKEditorConfigContributor extends BaseCKEditorConfigContributor {
 		jsonArray.put(toJSONArray("['Styles', 'FontSize']"));
 		jsonArray.put(toJSONArray("['Link', 'Unlink', 'Anchor']"));
 
-		String buttons = "['Table', '-', 'ImageSelector',";
+		String buttons =
+			"['Table', '-', 'GoogleDocsSelector', 'ImageSelector',";
 
 		if (XugglerUtil.isEnabled()) {
 			buttons = buttons.concat(" 'AudioSelector', 'VideoSelector',");
@@ -370,6 +374,7 @@ public class CKEditorConfigContributor extends BaseCKEditorConfigContributor {
 		jsonArray.put(toJSONArray("['Bold', 'Italic', 'Underline']"));
 		jsonArray.put(toJSONArray("['NumberedList', 'BulletedList']"));
 		jsonArray.put(toJSONArray("['Link', 'Unlink']"));
+		jsonArray.put(toJSONArray("['GoogleDocsSelector']"));
 		jsonArray.put(toJSONArray("['ImageSelector']"));
 
 		if (isShowSource(inputEditorTaglibAttributes)) {
@@ -387,6 +392,7 @@ public class CKEditorConfigContributor extends BaseCKEditorConfigContributor {
 		jsonArray.put(toJSONArray("['Bold', 'Italic', 'Underline', 'Strike']"));
 		jsonArray.put(toJSONArray("['NumberedList', 'BulletedList']"));
 		jsonArray.put(toJSONArray("['Link', 'Unlink']"));
+		jsonArray.put(toJSONArray("['GoogleDocsSelector']"));
 		jsonArray.put(toJSONArray("['Table', 'ImageSelector']"));
 
 		if (isShowSource(inputEditorTaglibAttributes)) {
@@ -409,6 +415,7 @@ public class CKEditorConfigContributor extends BaseCKEditorConfigContributor {
 		jsonArray.put(toJSONArray("['NumberedList', 'BulletedList']"));
 		jsonArray.put(toJSONArray("['Styles', 'FontSize']"));
 		jsonArray.put(toJSONArray("['Link', 'Unlink']"));
+		jsonArray.put(toJSONArray("['GoogleDocsSelector']"));
 		jsonArray.put(toJSONArray("['ImageSelector']"));
 
 		if (isShowSource(inputEditorTaglibAttributes)) {
