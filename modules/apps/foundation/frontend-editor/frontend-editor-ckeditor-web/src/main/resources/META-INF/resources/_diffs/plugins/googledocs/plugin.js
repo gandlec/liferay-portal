@@ -1,8 +1,8 @@
 (function() {
 
-	var API_KEY = '';
+	var API_KEY = Liferay.googleConfiguration.API_KEY;
 
-	var CLIENT_ID = '';
+	var CLIENT_ID = Liferay.googleConfiguration.CLIENT_ID;
 
 	var SCOPE = [
 	    'https://www.googleapis.com/auth/drive.readonly',

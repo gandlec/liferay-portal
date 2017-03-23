@@ -516,6 +516,22 @@ for (String analyticsType : analyticsTypes) {
 }
 %>
 
+<%-- Google Apps Configuration --%>
+
+<script data-senna-track="temporary" type="text/javascript">
+	<%
+	PortletPreferences portletPreferences = PrefsPropsUtil.getPreferences(themeDisplay.getCompanyId());
+
+	String googleAppsAPIKey = portletPreferences.getValue("googleAppsAPIKey", "");
+	String googleClientId = portletPreferences.getValue("googleClientId", "");
+	%>
+
+	Liferay.googleConfiguration = {
+		API_KEY: '<%= googleAppsAPIKey %>',
+		CLIENT_ID: '<%= googleClientId %>'
+	};
+</script>
+
 <%!
 private static String _getDateFormatPattern(Locale locale) {
 	String languageId = LocaleUtil.toLanguageId(locale);
