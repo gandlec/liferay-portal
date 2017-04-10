@@ -71,7 +71,8 @@ public class BlogsContentEditorConfigContributor
 
 		sb.append("a[*](*); ");
 		sb.append(getAllowedContentText());
-		sb.append(" div(*); img[alt, class, !src] {height, width}; ");
+		sb.append(
+			" div(*); iframe[*]; img[alt, class, !src] {height, width}; ");
 		sb.append(getAllowedContentLists());
 		sb.append(" p {text-align}; ");
 		sb.append(getAllowedContentTable());
