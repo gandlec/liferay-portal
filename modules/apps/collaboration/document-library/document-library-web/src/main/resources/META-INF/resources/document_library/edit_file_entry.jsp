@@ -655,6 +655,18 @@ else {
 }
 %>
 
+<aui:script use="document-library-document">
+	var document = new Liferay.Portlet.Document(
+		{
+			descriptionInputLocalized: Liferay.component('<portlet:namespace />description'),
+			namespace: '<portlet:namespace />',
+			titleInputLocalized: Liferay.component('<portlet:namespace />title'),
+			translationManager: Liferay.component('<portlet:namespace />translationManager')
+		}
+	);
+
+</aui:script>
+
 <%!
 private static Log _log = LogFactoryUtil.getLog("com_liferay_document_library_web.document_library.edit_file_entry_jsp");
 %>

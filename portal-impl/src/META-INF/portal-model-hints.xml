@@ -243,10 +243,10 @@
 		</field>
 		<field name="extension" type="String" />
 		<field name="mimeType" type="String" />
-		<field name="title" type="String">
+		<field localized="true" name="title" type="String">
 			<hint name="max-length">255</hint>
 		</field>
-		<field name="description" type="String">
+		<field localized="true" name="description" type="String">
 			<hint-collection name="TEXTAREA" />
 		</field>
 		<field name="extraSettings" type="String">
@@ -342,11 +342,11 @@
 		</field>
 		<field name="extension" type="String" />
 		<field name="mimeType" type="String" />
-		<field name="title" type="String">
+		<field localized="true" name="title" type="String">
 			<hint name="max-length">255</hint>
 			<validator name="required" />
 		</field>
-		<field name="description" type="String">
+		<field localized="true" name="description" type="String">
 			<hint-collection name="TEXTAREA" />
 		</field>
 		<field name="changeLog" type="String" />

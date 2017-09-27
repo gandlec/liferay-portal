@@ -13,6 +13,13 @@
 								'liferay-util-window'
 							]
 						},
+						'document-library-document': {
+							path: 'document.js',
+							requires: [
+								'aui-base',
+								'liferay-portlet-base'
+							]
+						},
 						'document-library-upload': {
 							path: 'upload.js',
 							requires: [
