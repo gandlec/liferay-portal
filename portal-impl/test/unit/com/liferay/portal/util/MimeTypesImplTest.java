@@ -14,6 +14,7 @@
 
 package com.liferay.portal.util;
 
+import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.MimeTypes;
 
 import java.io.InputStream;
@@ -30,6 +31,10 @@ public class MimeTypesImplTest {
 
 	@Before
 	public void setUp() {
+		FileUtil fileUtil = new FileUtil();
+
+		fileUtil.setFile(new FileImpl());
+
 		MimeTypesImpl mimeTypesImpl = new MimeTypesImpl();
 
 		mimeTypesImpl.afterPropertiesSet();
