@@ -298,6 +298,8 @@ public class JournalTransformer {
 					}
 				}
 
+				prepareTemplate(themeDisplay, template);
+
 				template.put("articleGroupId", articleGroupId);
 				template.put("company", getCompany(themeDisplay, companyId));
 				template.put("companyId", companyId);
@@ -686,6 +688,16 @@ public class JournalTransformer {
 		else {
 			template.processTemplate(unsyncStringWriter);
 		}
+	}
+
+	protected void prepareTemplate(ThemeDisplay themeDisplay, Template template)
+		throws Exception {
+
+		if (themeDisplay == null) {
+			return;
+		}
+
+		template.prepare(themeDisplay.getRequest());
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
